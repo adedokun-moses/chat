@@ -11,7 +11,7 @@
       <input type="password" />
     </div>
     <h4><router-link to="/">Forgot Password?</router-link></h4>
-    <button @click="log()">Log In</button>
+    <button @click.prevent="login()">Log In</button>
     <p>
       Not a logistics firm?<span class="login"
         ><router-link to="/userlog"> Login</router-link></span
@@ -22,10 +22,23 @@
 
 <script>
 export default {
+  data(){
+    return{
+      email: '',
+      password: '',
+    }
+  },
   methods: {
-    log() {
-      this.$router.push("admin");
+
+    login() {
+      var params = new FormData();
+      params.append("email", this.email);
+      params.append("password", this.password);
+      this.$store.dispatch('login', params) 
+
+      /*   this.$router.push("admin"); */
     },
+   
   },
 };
 </script>

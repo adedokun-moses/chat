@@ -7,17 +7,20 @@
         <h5>Login To Your Chattel Account</h5>
         <div class="formgroup">
           <label>Email</label>
-          <input type="email" />
+          <input type="email" v-model="email" />
         </div>
         <div class="formgroup">
           <label>Password</label>
-          <input type="password" />
+          <input type="password" v-model="password" />
+          <h4>{{result}}</h4>
         </div>
         <h4><router-link to="/">Forgot Password?</router-link></h4>
         <button @click="login()">Log In</button>
         <p>
           Not a User?<span class="login"
-            ><router-link to="/log"> Login as a logistics firm</router-link></span
+            ><router-link to="/log">
+              Login as a logistics firm</router-link
+            ></span
           >
         </p>
       </div>
@@ -26,13 +29,63 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+import axios from "axios";
+
 export default {
-   methods: {
-        login(){
-            this.$router.push('/dashboard')
-        }
-   }
-}
+  // ...mapActions(["login"]),
+  data() {
+    return {
+      email: "",
+      password: "",
+      result: ''
+     
+    };
+  },
+  methods: {
+    login() {
+      var params = new FormData();
+      params.append("email", this.email);
+      params.append("password", this.password);
+      // this.$store.dispatch('login', params)
+      if (this.email == "") {
+        alert("Email can not be empty, input your mail");
+        return false;
+      }
+      if (this.password == "") {
+        alert("Password can not be empty, input your mail");
+        return false;
+      }
+
+      axios
+        .post("/api/user_auth/login", params)
+        .then((res) => {
+          console.log(res.data);
+          let result = res.data;
+          sessionStorage.setItem("token", JSON.stringify(result.token));
+          if(result.status == "denied" || result.status == "failed"){
+            this.result = result.message[0];
+            alert(result.message)
+           // alert("User Not Registered, Kindly Sign Up")
+          } 
+       /*    if(result.status == "denied"){
+            alert("User Not Registered, Kindly Sign Up")
+          }
+         */
+          
+          else{
+
+               this.$router.push("dashboard");
+          }
+        })
+        .catch((error) => {
+          if (error.res) {
+            console.log(error.res.data);
+          }
+        });
+    },
+  },
+};
 </script>
 <style scoped>
 .container {
@@ -100,39 +153,37 @@ a {
   font-weight: bolder;
 }
 .form p {
-    text-align: center;
-    font-family: open sans;
-
+  text-align: center;
+  font-family: open sans;
 }
-.login a{
-    font-weight: bolder;
-    color: #12036b;
-
+.login a {
+  font-weight: bolder;
+  color: #12036b;
 }
-@media only screen and (max-width: 600px){
+@media only screen and (max-width: 600px) {
   .container {
- flex-direction: column;
-}
-  .display{
+    flex-direction: column;
+  }
+  .display {
     display: none;
   }
 
-.form {
-  width: 100%;
-  margin: 30px auto;
-  height: 500px;
-}
+  .form {
+    width: 100%;
+    margin: 30px auto;
+    height: 500px;
+  }
 
-.form button {
-  display:block;
-  width: 73%;
-  margin: auto;
-  padding: 20px 10px;
-  background: #12036b;
-  outline: none;
-  border: none;
-  color: white;
-  font-weight: bolder;
-}
+  .form button {
+    display: block;
+    width: 73%;
+    margin: auto;
+    padding: 20px 10px;
+    background: #12036b;
+    outline: none;
+    border: none;
+    color: white;
+    font-weight: bolder;
+  }
 }
 </style>

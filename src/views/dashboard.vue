@@ -1,6 +1,6 @@
 <template>
   <div class="main_container">
-    <div style="flex-basis: 30%; height: 100vh;">
+    <div style="flex-basis: 30%; height: 100vh">
       <Nav />
     </div>
     <div style="flex-basis: 80%">
@@ -22,11 +22,8 @@
           </select>
         </div>
         <div class="groups">
-            
-          <div class="group_det" v-for="det in details" :key="det.compname">
-            <router-link
-              :to="{ name: 'groupinfo', params: { id: det.compname } }"
-            >
+          <div class="group_det" v-for="det in details" :key="det.id">
+            <router-link :to="{ name: 'groupinfo', params: { id: det.id } }">
               <div class="group_logo">
                 <h3>DG</h3>
                 <h4>
@@ -65,88 +62,41 @@
 
 <script>
 import Nav from "../components/nav.vue";
+import axios from "axios";
 
 export default {
   components: { Nav },
   data() {
     return {
-      details: [
-        {
-          compname: "Devon Group",
-          areas: " Lagos, Abuja, Ogun",
-          kg: 30,
-          status: "online",
-          toprate: "220",
-          lowrate: "20",
-          rate: "Fast Delivery",
-        },
-        {
-          compname: "Devon Group",
-          areas: " Lagos, Abuja, Ogun",
-          kg: 30,
-          status: "online",
-          toprate: "220",
-          lowrate: "20",
-          rate: "Fast Delivery",
-        },
-        {
-          compname: "Devon Minis",
-          areas: " Lagos, Abuja, Ogun",
-          kg: 30,
-          status: "offline",
-          toprate: "220",
-          lowrate: "20",
-          rate: "Fast Delivery",
-        },
-        {
-          compname: "Devon Group",
-          areas: " Lagos, Abuja, Ogun",
-          kg: 30,
-          status: "online",
-          toprate: "220",
-          lowrate: "20",
-          rate: "Fast Delivery",
-        },
-        {
-          compname: "Devon Group",
-          areas: " Lagos, Abuja, Ogun",
-          kg: 30,
-          status: "online",
-          toprate: "220",
-          lowrate: "20",
-          rate: "Fast Delivery",
-        },
-
-        {
-          compname: "Devon Group",
-          areas: " Lagos, Abuja, Ogun",
-          kg: 30,
-          status: "offline",
-          toprate: "220",
-          lowrate: "20",
-          rate: "Fast Delivery",
-        },
-        {
-          compname: "Devon Group",
-          areas: " Lagos, Abuja, Ogun",
-          kg: 30,
-          status: "online",
-          toprate: "220",
-          lowrate: "20",
-          rate: "Fast Delivery",
-        },
-        {
-          compname: "Devon Group",
-          areas: " Lagos, Abuja, Ogun",
-          kg: 30,
-          status: "offline",
-          toprate: "220",
-          lowrate: "20",
-          rate: "Fast Delivery",
-        },
-      ],
+      details: [],
     };
   },
+  methods: {
+    fetchLogistic() {
+      axios
+        .get("/api/user_auth/logistic_list")
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+  },
+
+  mounted(){
+    this.fetchLogistic()
+  }
+  /* 
+    async created() {
+    try {
+      const res = await axios.get("/api/user_auth/logistic_list");
+      this.details = res.data;
+      console.log(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }, */
 };
 </script>
 
@@ -205,12 +155,12 @@ export default {
   flex-wrap: wrap;
   margin: 0px;
 }
-.group_det a{
-    text-decoration: none;
-    color: black ;
+.group_det a {
+  text-decoration: none;
+  color: black;
 }
-.group_det a:hover{
-    color: black;
+.group_det a:hover {
+  color: black;
 }
 .group_det h3,
 h5 {
